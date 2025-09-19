@@ -1,0 +1,62 @@
+version: "3.8"
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    hostname: kafka
+    networks:
+      - shared-network
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:29092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:29092,OUTSIDE://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,OUTSIDE://localhost:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_LOG_DIRS=/tmp/kraft-combined-logs
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+      - "29092:29092"
+  spark-master:
+    image: bitnami/spark:3.3
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_DRIVER_MEMORY=2g
+      - SPARK_DRIVER_CORES=2
+    networks:
+      - shared-network
+    depends_on:
+      - kafka
+  spark-worker:
+    image: bitnami/spark:3.3
+    container_name: spark-worker
+    hostname: spark-worker
+    depends_on:
+      - spark-master
+      - kafka
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_CORES=2
+    ports:
+      - "8081:8081"
+    networks:
+      - shared-network
+networks:
+  shared-network:
+    driver: bridge
