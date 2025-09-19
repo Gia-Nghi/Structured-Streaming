@@ -31,18 +31,25 @@ pip install kafka-python
 ```
 ________________________________________
 ### **Bước 4: Hướng dẫn chạy Demo**
-Bây giờ bạn sẽ chạy song song cả producer và consumer.
-1.	Chạy Producer (trên máy của bạn): Mở một terminal, di chuyển đến thư mục chứa file producer.py và chạy:
+Chạy song song cả producer và consumer.
+1.	Chạy Producer: Mở một terminal, di chuyển đến thư mục chứa file producer.py và chạy:
 ```bash
 python producer.py
 ```
 Bạn sẽ thấy các dòng log "Đã gửi: ..." xuất hiện liên tục. Cứ để terminal này chạy.
-2.	Chạy Consumer (bên trong Spark container):
-
-  o	Đầu tiên, bạn cần sao chép file spark_consumer.py vào container spark-master:
+2.	Chạy Consumer:
+  o	Sao chép file spark_consumer.py vào container spark-master:
 ```bash
 docker cp spark_consumer.py spark-master:/opt/bitnami/spark/
 ```
-  o	Mở một terminal mới và thực thi spark-submit. Lệnh này sẽ chạy ứng dụng Spark của bạn và chỉ định các gói thư viện cần thiết để kết nối với Kafka.
+  o	Thực thi spark-submit. Lệnh này sẽ chạy ứng dụng Spark của bạn và chỉ định các gói thư viện cần thiết để kết nối với Kafka.
 ```bash
-docker exec spark-master /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 /opt/bitnami/spark/spark_coquyết yêu cầu đề bài 
+docker exec spark-master /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 /opt/bitnami/spark/spark_consumer.py
+```
+________________________________________
+
+## **HƯỚNG DẪN PHẦN BÀI TẬP**
+
+### Sử dụng 2 file producer_bt.py và spark_consumer_bt.py trong folder
+Hoàn thiện code spark_consumer_bt.py để giải quyết yêu cầu bài tập.
+
