@@ -45,5 +45,4 @@ docker cp spark_consumer.py spark-master:/opt/bitnami/spark/
 ```
   o	Mở một terminal mới và thực thi spark-submit. Lệnh này sẽ chạy ứng dụng Spark của bạn và chỉ định các gói thư viện cần thiết để kết nối với Kafka.
 ```bash
-docker exec spark-master /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 /opt/bitnami/spark/spark_consumer.py
-```
+docker exec spark-master /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 /opt/bitnami/spark/spark_coquyết yêu cầu đề bài 
